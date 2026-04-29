@@ -1,0 +1,8 @@
+*.log
+*.map
+.bash_history
+.directory
+.DS_Store
+.env
+/.idea
+Thumbs.db

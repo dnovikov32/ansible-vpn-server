@@ -1,0 +1,2 @@
+ssh_port: 39364
+disable_ssh_password_auth: true

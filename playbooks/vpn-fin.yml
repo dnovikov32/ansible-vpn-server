@@ -1,0 +1,99 @@
+---
+- name: VPN FIN
+  hosts: vps
+  become: true
+  gather_facts: true
+  vars_files:
+    - ../group_vars/all.yml
+
+  tasks:
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Upgrade all packages
+      ansible.builtin.apt:
+        upgrade: dist
+
+    - name: Install required base packages
+      ansible.builtin.apt:
+        name:
+          - ufw
+          - docker.io
+        state: present
+
+    - name: Configure SSH port
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?Port\s+'
+        line: "Port {{ ssh_port }}"
+        backup: true
+      notify: Restart ssh service
+
+    - name: Disable SSH password authentication
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?PasswordAuthentication\s+'
+        line: "PasswordAuthentication no"
+        backup: true
+      when: disable_ssh_password_auth | bool
+      notify: Restart ssh service
+
+    - name: Disable permit root login by password
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?PermitRootLogin\s+'
+        line: "PermitRootLogin prohibit-password"
+        backup: true
+      when: disable_ssh_password_auth | bool
+      notify: Restart ssh service
+
+    - name: Disable challenge response authentication
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?ChallengeResponseAuthentication\s+'
+        line: "ChallengeResponseAuthentication no"
+        backup: true
+      when: disable_ssh_password_auth | bool
+      notify: Restart ssh service
+
+    - name: Ensure pubkey authentication is enabled
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?PubkeyAuthentication\s+'
+        line: "PubkeyAuthentication yes"
+        backup: true
+      notify: Restart ssh service
+
+    - name: Allow selected SSH port in UFW
+      community.general.ufw:
+        rule: allow
+        port: "{{ ssh_port }}"
+        proto: tcp
+
+    - name: Deny all incoming traffic by default
+      community.general.ufw:
+        direction: incoming
+        policy: deny
+
+    - name: Allow all outgoing traffic by default
+      community.general.ufw:
+        direction: outgoing
+        policy: allow
+
+    - name: Enable UFW
+      community.general.ufw:
+        state: enabled
+
+    - name: Enable and start Docker service
+      ansible.builtin.systemd:
+        name: docker
+        enabled: true
+        state: started
+
+  handlers:
+    - name: Restart ssh service
+      ansible.builtin.service:
+        name: "{{ 'ssh' if ansible_facts.os_family == 'Debian' else 'sshd' }}"
+        state: restarted

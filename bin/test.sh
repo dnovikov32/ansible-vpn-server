@@ -109,7 +109,7 @@ if [[ $HAS_SSHPASS -eq 1 && -n "${ANSIBLE_PASSWORD:-}" ]]; then
   if [[ $password_attempt_rc -eq 0 ]]; then
     fail "Password login succeeded; PasswordAuthentication is still enabled"
   else
-    pass "Password login is denied (real auth attempt)"
+    pass "Password login is denied"
   fi
 else
   echo "[WARN] sshpass or ANSIBLE_PASSWORD missing, using sshd config fallback check"
@@ -140,5 +140,15 @@ if grep -Eq "(^|[[:space:]])${SSH_PORT}(/tcp)?([[:space:]]|$).*ALLOW" <<<"$ufw_s
 else
   fail "UFW rule for SSH port $SSH_PORT not found"
 fi
+
+# 4) Check that standard public ports are closed from outside.
+closed_ports="80 443"
+for port in $closed_ports; do
+  if nc -z -w 5 "$ANSIBLE_HOST" "$port"; then
+    fail "Port $port is reachable, but expected to be closed by firewall"
+  else
+    pass "Port $port is closed"
+  fi
+done
 
 echo "All security checks passed."

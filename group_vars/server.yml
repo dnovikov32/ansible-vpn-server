@@ -1,0 +1,2 @@
+ssh_port: "{{ lookup('ansible.builtin.env', 'SSH_PORT') }}"
+disable_ssh_password_auth: true

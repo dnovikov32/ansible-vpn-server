@@ -4,7 +4,8 @@
   become: true
   gather_facts: true
   vars_files:
-    - ../group_vars/all.yml
+    - ../group_vars/ansible.yml
+    - ../group_vars/server.yml
 
   tasks:
     - name: Update apt cache

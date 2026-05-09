@@ -1,0 +1,3 @@
+ansible_host: "{{ lookup('ansible.builtin.env', 'ANSIBLE_HOST') }}"
+ansible_port: "{{ lookup('ansible.builtin.env', 'ANSIBLE_PORT') }}"
+ansible_user: "{{ lookup('ansible.builtin.env', 'ANSIBLE_USER') }}"

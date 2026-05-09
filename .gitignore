@@ -1,5 +1,6 @@
 *.log
 *.map
+.ansible
 .bash_history
 .directory
 .DS_Store

@@ -1,31 +1,22 @@
 # New VPN server setup
 
-## 1) Заполнить inventory
-
-Отредактируйте `inventory/hosts.ini`:
-- `YOUR_SERVER_IP` -> IP вашего сервера
-- `ansible_user` -> пользователь для SSH (например `root`)
-- `ansible_port` -> текущий SSH порт сервера (до применения playbook)
-
-## 2) Проверить переменные
-
-В `group_vars/all.yml`:
-- `ssh_port` — новый SSH порт (должен быть не `39364`)
-- `disable_ssh_password_auth` — оставить `true`, если вход по ключу уже работает
-
-## 3) Установить коллекции
-
 ```bash
-ansible-galaxy collection install -r collections/requirements.yml
+cp .env.example .env
 ```
 
-## 4) Запустить playbook
+## Установить коллекции
 
 ```bash
-ansible-playbook playbooks/vpn-fin.yml
+make install-collections
 ```
 
-После смены SSH порта подключаться нужно уже на новый порт `ssh_port`.
+## Запустить playbook
+
+```bash
+make run
+```
+
+После смены SSH порта подключаться нужно уже на новый порт `SSH_PORT`.
 
 Потребовалась перезагрузка vps, до этого не заработал 
 ```

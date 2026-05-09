@@ -1,22 +1,22 @@
 # Ansible VPN server config
 
+### Install dependencies
 
-### Добавить переменные окружения
+```bash
+sudo apt install ansible
+ansible-galaxy collection install -r collections/requirements.yml
+```
+
+### Add environment
 
 ```bash
 cp .env.example .env
 ```
 
-### Установить коллекции
+### Run playbook
 
 ```bash
-make install-collections
-```
-
-### Запустить playbook
-
-```bash
-make run
+make playbook-run
 ```
 
 После смены SSH порта подключаться нужно уже на новый порт `SSH_PORT`.
@@ -27,7 +27,7 @@ make run
 ssh -p port root@host
 ```
 
-## Тесты
+### Тесты
 
 ```bash
 make test

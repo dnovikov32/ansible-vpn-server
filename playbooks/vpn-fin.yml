@@ -22,6 +22,8 @@
         name:
           - ufw
           - docker.io
+          - docker-compose
+          - python3-docker
         state: present
 
     - name: Configure SSH port
@@ -73,6 +75,12 @@
         port: "{{ ssh_port }}"
         proto: tcp
 
+    - name: Allow WireGuard (UDP)
+      community.general.ufw:
+        rule: allow
+        port: "51820"
+        proto: udp
+
     - name: Deny all incoming traffic by default
       community.general.ufw:
         direction: incoming
@@ -92,6 +100,36 @@
         name: docker
         enabled: true
         state: started
+
+    - name: Ensure WireGuard server container is running
+      community.docker.docker_container:
+        name: wireguard
+        image: hwdsl2/wireguard-server
+        pull: true
+        state: started
+        restart_policy: always
+        volumes:
+          - wireguard-data:/etc/wireguard
+          - ./vpn.env:/vpn.env:ro
+        published_ports:
+          - "51820:51820/udp"
+        capabilities:
+          - NET_ADMIN
+          - SYS_MODULE
+        devices:
+          - "/dev/net/tun:/dev/net/tun"
+        sysctls:
+          "net.ipv4.ip_forward": "1"
+          "net.ipv6.conf.all.forwarding": "1"
+
+    - name: Fetch WireGuard container logs
+      ansible.builtin.command: docker logs --tail 500 wireguard
+      register: wireguard_logs
+      changed_when: false
+
+    - name: Print WireGuard container logs
+      ansible.builtin.debug:
+        msg: "{{ wireguard_logs.stdout_lines }}"
 
   handlers:
     - name: Restart ssh service

@@ -6,4 +6,5 @@
 .DS_Store
 .env
 /.idea
+/clients
 Thumbs.db

@@ -38,3 +38,22 @@ make test
 - Задать переменную `ANSIBLE_PASSWORD` - реальный пароль пользователя для теста
 - Установить `sudo apt install sshpass` 
 
+### Wire Guard commands
+
+Add new client:
+
+```bash 
+make add-client
+```
+
+Remove client:
+
+```bash 
+make remove-client
+```
+
+List clients:
+
+```bash 
+make list-client
+```

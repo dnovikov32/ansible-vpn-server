@@ -91,6 +91,11 @@
         direction: outgoing
         policy: allow
 
+    - name: Reload UFW
+      community.general.ufw:
+        state: reloaded
+      become: yes
+
     - name: Enable UFW
       community.general.ufw:
         state: enabled

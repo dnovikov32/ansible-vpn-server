@@ -1,5 +1,7 @@
 # Ansible VPN server config
 
+Used [WireGuard VPN Server on Docker](https://github.com/hwdsl2/docker-wireguard)
+
 ### Install dependencies
 
 ```bash
@@ -56,4 +58,30 @@ List clients:
 
 ```bash 
 make list-client
+```
+
+## Client
+
+```bash
+sudo apt install wireguard
+```
+
+```bash
+sudo chmod o+r /etc/wireguard 
+```
+
+```bash
+sudo cp ./clients/client-name.conf /etc/wireguard/client-name.conf
+```
+
+```bash
+sudo wg-quick up client-name
+```
+
+```bash
+sudo wg-quick down client-name
+```
+
+```bash
+sudo wg show
 ```

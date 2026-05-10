@@ -21,7 +21,8 @@ for var_name in "${required_vars[@]}"; do
   fi
 done
 
-read -rp "Enter client name: " client
-ssh -p $ANSIBLE_PORT $ANSIBLE_USER@$ANSIBLE_HOST "docker exec wireguard wg_manage --addclient $client"
+read -rp "Enter client name: " CLIENT
 
-
+ssh -p $ANSIBLE_PORT $ANSIBLE_USER@$ANSIBLE_HOST "docker exec wireguard wg_manage --addclient $CLIENT"
+ssh -p $ANSIBLE_PORT $ANSIBLE_USER@$ANSIBLE_HOST "docker exec wireguard cat /etc/wireguard/clients/$CLIENT.conf" > ./clients/"$CLIENT.conf"
+echo "Client config was copied to ./clients/$CLIENT"

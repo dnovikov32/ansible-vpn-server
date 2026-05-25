@@ -23,13 +23,12 @@ done
 
 read -rp "Enter client name: " CLIENT
 
-ssh -p $ANSIBLE_PORT $ANSIBLE_USER@$ANSIBLE_HOST "docker exec ipsec-vpn ikev2.sh --addclient $CLIENT"
+mkdir -p ./clients
 
-# TODO: fix error, copy files from container to host
-# /clients/: No such file or directory
-# make: *** [Makefile:12: add-client] Error 1
-
-scp -p $ANSIBLE_PORT $ANSIBLE_USER@$ANSIBLE_HOST:/etc/ipsec.d/"$CLIENT.mobileconfig $CLIENT.p12 $CLIENT.sswan" /clients/
+ssh -T -p "$ANSIBLE_PORT" "$ANSIBLE_USER@$ANSIBLE_HOST" "
+  docker exec ipsec-vpn ikev2.sh --addclient '$CLIENT' >&2 && \
+  docker exec ipsec-vpn tar -cf - -C /etc/ipsec.d '$CLIENT.mobileconfig' '$CLIENT.p12' '$CLIENT.sswan'
+" | tar -xf - -C ./clients/
 
 echo "Client configs was copied to ./clients/$CLIENT (mobileconfig, p12, sswan)"
 

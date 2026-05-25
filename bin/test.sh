@@ -22,16 +22,6 @@ for var_name in "${required_vars[@]}"; do
   fi
 done
 
-if ! command -v ssh >/dev/null 2>&1; then
-  echo "ERROR: ssh client is not installed"
-  exit 1
-fi
-
-if ! command -v nc >/dev/null 2>&1; then
-  echo "ERROR: netcat (nc) is not installed"
-  exit 1
-fi
-
 HAS_SSHPASS=0
 if command -v sshpass >/dev/null 2>&1; then
   HAS_SSHPASS=1

@@ -1,6 +1,12 @@
 # Ansible VPN server config
 
-Used [WireGuard VPN Server on Docker](https://github.com/hwdsl2/docker-wireguard)
+
+### Required
+- ssh
+- nc
+- sshpass (for test)
+
+Used [IPsec VPN Server on Docker](https://github.com/hwdsl2/docker-ipsec-vpn-server)
 
 ### Install dependencies
 
@@ -18,7 +24,7 @@ cp .env.example .env
 ### Run playbook
 
 ```bash
-make playbook-run
+make bootstrap
 ```
 
 После смены SSH порта подключаться нужно уже на новый порт `SSH_PORT`.
@@ -37,10 +43,10 @@ make test
 
 Для проверки недоступности подключения по ssh по паролю:
 
+- Установить `sudo apt install sshpass`
 - Задать переменную `ANSIBLE_PASSWORD` - реальный пароль пользователя для теста
-- Установить `sudo apt install sshpass` 
 
-### Wire Guard commands
+### IPsec VPN commands
 
 Add new client:
 
@@ -57,10 +63,12 @@ make remove-client
 List clients:
 
 ```bash 
-make list-client
+make list-clients
 ```
 
 ## Client
+
+## TODO: change to IPsec VPN
 
 ```bash
 sudo apt install wireguard

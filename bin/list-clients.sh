@@ -19,5 +19,4 @@ for var_name in "${required_vars[@]}"; do
   fi
 done
 
-read -rp "Enter client name for remove: " client
-ssh -p $ANSIBLE_PORT $ANSIBLE_USER@$ANSIBLE_HOST "docker exec wireguard wg_manage --removeclient $client -y"
+ssh -p $ANSIBLE_PORT $ANSIBLE_USER@$ANSIBLE_HOST "docker exec ipsec-vpn ikev2.sh --listclients"

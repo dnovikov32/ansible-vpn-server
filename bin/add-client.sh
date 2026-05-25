@@ -23,6 +23,16 @@ done
 
 read -rp "Enter client name: " CLIENT
 
-ssh -p $ANSIBLE_PORT $ANSIBLE_USER@$ANSIBLE_HOST "docker exec wireguard wg_manage --addclient $CLIENT"
-ssh -p $ANSIBLE_PORT $ANSIBLE_USER@$ANSIBLE_HOST "docker exec wireguard cat /etc/wireguard/clients/$CLIENT.conf" > ./clients/"$CLIENT.conf"
-echo "Client config was copied to ./clients/$CLIENT"
+ssh -p $ANSIBLE_PORT $ANSIBLE_USER@$ANSIBLE_HOST "docker exec ipsec-vpn ikev2.sh --addclient $CLIENT"
+
+# TODO: fix error, copy files from container to host
+# /clients/: No such file or directory
+# make: *** [Makefile:12: add-client] Error 1
+
+scp -p $ANSIBLE_PORT $ANSIBLE_USER@$ANSIBLE_HOST:/etc/ipsec.d/"$CLIENT.mobileconfig $CLIENT.p12 $CLIENT.sswan" /clients/
+
+echo "Client configs was copied to ./clients/$CLIENT (mobileconfig, p12, sswan)"
+
+
+
+

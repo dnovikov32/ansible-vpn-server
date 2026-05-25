@@ -1,4 +1,4 @@
-.PHONY: bootstrap test add-client remove-client list-client
+.PHONY: bootstrap test add-client delete-client list-clients
 
 ANSIBLE_PLAYBOOK = ansible-playbook
 
@@ -11,8 +11,8 @@ test:
 add-client:
 	@bash bin/add-client.sh
 
-remove-client:
-	@bash bin/remove-client.sh
+delete-client:
+	@bash bin/delete-client.sh
 
-list-client:
-	@bash bin/list-client.sh
+list-clients:
+	@bash bin/list-clients.sh

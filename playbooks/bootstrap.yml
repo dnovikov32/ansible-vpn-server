@@ -121,6 +121,33 @@
           - "500:500/udp"
           - "4500:4500/udp"
 
+    - name: Check if authby=rsa-sha1 is set for conn ikev2-cp
+      ansible.builtin.command:
+        argv:
+          - docker
+          - exec
+          - ipsec-vpn
+          - grep
+          - -qE
+          - '^  authby=rsa-sha1$'
+          - /etc/ipsec.d/ikev2.conf
+      register: ikev2_authby_rsa_sha1
+      failed_when: false
+      changed_when: false
+
+    - name: Append authby=rsa-sha1 to conn ikev2-cp for Linux IKEv2 clients
+      ansible.builtin.command:
+        argv:
+          - docker
+          - exec
+          - ipsec-vpn
+          - sed
+          - -i
+          - '/^  mobike=/a\  authby=rsa-sha1'
+          - /etc/ipsec.d/ikev2.conf
+      when: ikev2_authby_rsa_sha1.rc != 0
+      notify: Restart ipsec in VPN container
+
     - name: Fetch IPsec VPN container logs
       ansible.builtin.command: docker logs ipsec-vpn
       register: ipsec_vpn_logs
@@ -135,3 +162,7 @@
       ansible.builtin.service:
         name: "{{ 'ssh' if ansible_facts.os_family == 'Debian' else 'sshd' }}"
         state: restarted
+
+    - name: Restart ipsec in VPN container
+      ansible.builtin.command:
+        cmd: docker exec ipsec-vpn service ipsec restart

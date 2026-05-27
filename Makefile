@@ -23,3 +23,11 @@ delete-client: ## Delete client
 .PHONY: list-client
 list-clients: ## Client list
 	@bash bin/list-clients.sh
+
+.PHONY: logs
+logs: ## Container logs
+	@bash bin/logs.sh
+
+.PHONY: contents
+contents: ## Contents of /etc/ipsec.d in the container
+	@bash bin/contents.sh

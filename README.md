@@ -54,6 +54,8 @@ Add new client:
 make add-client
 ```
 
+Command also copies the client configuration files to the [./clients](./clients) directory.
+
 Remove client:
 
 ```bash 
@@ -66,30 +68,19 @@ List clients:
 make list-clients
 ```
 
-## Client
-
-## TODO: change to IPsec VPN
+Check container logs to view details for IKEv2:
 
 ```bash
-sudo apt install wireguard
+make logs
 ```
 
-```bash
-sudo chmod o+r /etc/wireguard 
-```
+Check contents of /etc/ipsec.d in the container:
 
 ```bash
-sudo cp ./clients/client-name.conf /etc/wireguard/client-name.conf
+make contents
 ```
 
-```bash
-sudo wg-quick up client-name
-```
+## Configure IKEv2 VPN clients
 
-```bash
-sudo wg-quick down client-name
-```
+[Guide: How to Set Up and Use IKEv2 VPN](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/ikev2-howto.md)
 
-```bash
-sudo wg show
-```
